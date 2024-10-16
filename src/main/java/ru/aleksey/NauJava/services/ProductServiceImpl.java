@@ -1,47 +1,37 @@
 package ru.aleksey.NauJava.services;
 
-import ru.aleksey.NauJava.entities.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.aleksey.NauJava.repository.ProductRepository;
-
-import java.util.ArrayList;
-import java.util.List;
+import ru.aleksey.NauJava.entities.Product;
+import ru.aleksey.NauJava.repositories.ProductRepository;
 
 @Service
 public class ProductServiceImpl implements ProductService
 {
-    private final ProductRepository productRepository;
-
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository)
+    private ProductRepository productRepository;
+
+    @Override
+    public Product createProduct(String name, Integer calories)
     {
-        this.productRepository = productRepository;
+        var existingProduct = productRepository.findByName(name);
+        if (existingProduct != null)
+        {
+            return null;
+        }
+
+        var product = new Product();
+        product.setName(name);
+        product.setCalories(calories);
+
+        productRepository.save(product);
+
+        return product;
     }
 
     @Override
-    public void createProduct(Long id, String name, Integer calories)
+    public Product getProductByName(String name)
     {
-        var newProduct = new Product();
-        newProduct.setId(id);
-        newProduct.setName(name);
-        newProduct.setCalories(calories);
-        productRepository.create(newProduct);
-    }
-
-    @Override
-    public List<Product> getAllProducts()
-    {
-        return productRepository.getAll();
-    }
-
-    @Override
-    public void updateProduct(Long id, String name, Integer calories)
-    {
-        var updatedProduct = new Product();
-        updatedProduct.setId(id);
-        updatedProduct.setName(name);
-        updatedProduct.setCalories(calories);
-        productRepository.update(updatedProduct);
+        return productRepository.findByName(name);
     }
 }

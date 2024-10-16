@@ -1,10 +1,26 @@
 package ru.aleksey.NauJava.entities;
 
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "product")
 public class Product
 {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true)
     private String name;
+
+    @Column
     private Integer calories;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private final List<UserProduct> users = new ArrayList<>();
 
     public Long getId()
     {
@@ -36,9 +52,8 @@ public class Product
         this.calories = calories;
     }
 
-    @Override
-    public String toString()
+    public List<UserProduct> getUsers()
     {
-        return String.format("{\"id\":\"%s\", \"name\":\"%s\", \"calories\":\"%s\"}", id, name, calories);
+        return users;
     }
 }

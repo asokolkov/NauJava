@@ -1,16 +1,17 @@
 package ru.aleksey.NauJava.services;
 
 import ru.aleksey.NauJava.entities.Product;
+import ru.aleksey.NauJava.entities.User;
 
 import java.util.List;
 
 public interface UserService
 {
-    void createUser(Long id, String username);
+    User createUser(String login, String name, String password);
 
-    void updateUser(Long id, String username);
+    User getUserByLoginAndPassword(String login, String password);
 
-    List<Product> getProducts(Long id);
+    List<Product> addProductToUser(Long userId, Long productId);
 
-    void addProductToUser(Long userId, Long productId);
+    List<Product> getUserProducts(Long userId);
 }

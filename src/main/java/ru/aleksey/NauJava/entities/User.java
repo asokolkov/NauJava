@@ -1,12 +1,29 @@
 package ru.aleksey.NauJava.entities;
 
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "user", schema = "public")
 public class User
 {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username;
-    private List<Product> products;
+
+    @Column
+    private String name;
+
+    @Column(unique = true)
+    private String login;
+
+    @Column
+    private String password;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private final List<UserProduct> products = new ArrayList<>();
 
     public Long getId()
     {
@@ -18,29 +35,38 @@ public class User
         this.id = id;
     }
 
+    public String getLogin()
+    {
+        return login;
+    }
+
+    public void setLogin(String login)
+    {
+        this.login = login;
+    }
+
     public String getName()
     {
-        return username;
+        return name;
     }
 
-    public void setUsername(String username)
+    public void setName(String name)
     {
-        this.username = username;
+        this.name = name;
     }
 
-    public List<Product> getProducts()
+    public String getPassword()
+    {
+        return password;
+    }
+
+    public void setPassword(String password)
+    {
+        this.password = password;
+    }
+
+    public List<UserProduct> getProducts()
     {
         return products;
-    }
-
-    public void setProducts(List<Product> products)
-    {
-        this.products = products;
-    }
-
-    @Override
-    public String toString()
-    {
-        return String.format("{\"id\":\"%s\", \"name\":\"%s\"}", id, username);
     }
 }
