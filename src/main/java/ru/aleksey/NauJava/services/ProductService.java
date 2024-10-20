@@ -1,10 +1,15 @@
 package ru.aleksey.NauJava.services;
 
-import ru.aleksey.NauJava.entities.Product;
+import ru.aleksey.NauJava.dtos.ProductCreateDto;
+import ru.aleksey.NauJava.dtos.ProductDto;
+
+import java.util.List;
 
 public interface ProductService
 {
-    Product createProduct(String name, Integer calories);
+    List<ProductDto> getProducts();
 
-    Product getProductByName(String name);
+    ProductDto createProduct(ProductCreateDto productCreateDto);
+
+    ProductDto getProductByName(String name);
 }

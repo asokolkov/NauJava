@@ -11,7 +11,7 @@ public class User
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Column
     private String name;
@@ -25,24 +25,14 @@ public class User
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private final List<UserProduct> products = new ArrayList<>();
 
-    public Long getId()
+    public long getId()
     {
         return id;
     }
 
-    public void setId(Long id)
+    public void setId(long id)
     {
         this.id = id;
-    }
-
-    public String getLogin()
-    {
-        return login;
-    }
-
-    public void setLogin(String login)
-    {
-        this.login = login;
     }
 
     public String getName()
@@ -53,6 +43,16 @@ public class User
     public void setName(String name)
     {
         this.name = name;
+    }
+
+    public String getLogin()
+    {
+        return login;
+    }
+
+    public void setLogin(String login)
+    {
+        this.login = login;
     }
 
     public String getPassword()

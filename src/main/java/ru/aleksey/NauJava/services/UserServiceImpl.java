@@ -1,11 +1,16 @@
 package ru.aleksey.NauJava.services;
 
 import org.springframework.transaction.annotation.Transactional;
-import ru.aleksey.NauJava.entities.Product;
+import ru.aleksey.NauJava.dtos.ProductDto;
+import ru.aleksey.NauJava.dtos.UserCreateDto;
+import ru.aleksey.NauJava.dtos.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.aleksey.NauJava.dtos.UserLoginDto;
 import ru.aleksey.NauJava.entities.User;
 import ru.aleksey.NauJava.entities.UserProduct;
+import ru.aleksey.NauJava.mappers.ProductMapper;
+import ru.aleksey.NauJava.mappers.UserMapper;
 import ru.aleksey.NauJava.repositories.ProductRepository;
 import ru.aleksey.NauJava.repositories.UserProductRepository;
 import ru.aleksey.NauJava.repositories.UserRepository;
@@ -13,7 +18,6 @@ import ru.aleksey.NauJava.repositories.UserRepository;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService
@@ -25,10 +29,13 @@ public class UserServiceImpl implements UserService
     @Autowired
     private UserProductRepository userProductRepository;
 
-
     @Override
-    public User createUser(String login, String name, String password)
+    public UserDto createUser(UserCreateDto userCreateDto)
     {
+        var name = userCreateDto.getName();
+        var login = userCreateDto.getLogin();
+        var password = userCreateDto.getPassword();
+
         var existingUser = userRepository.findByLogin(login);
         if (existingUser != null)
         {
@@ -36,24 +43,33 @@ public class UserServiceImpl implements UserService
         }
 
         var user = new User();
-        user.setLogin(login);
         user.setName(name);
+        user.setLogin(login);
         user.setPassword(password);
 
         userRepository.save(user);
 
-        return user;
+        var userDto = UserMapper.MAPPER.mapToDto(user);
+
+        return userDto;
     }
 
     @Override
-    public User getUserByLoginAndPassword(String login, String password)
+    public UserDto getUserByLoginAndPassword(UserLoginDto userLoginDto)
     {
-        return userRepository.findByLoginAndPassword(login, password);
+        var login = userLoginDto.getLogin();
+        var password = userLoginDto.getPassword();
+
+        var user = userRepository.findByLoginAndPassword(login, password);
+
+        var userDto = UserMapper.MAPPER.mapToDto(user);
+
+        return userDto;
     }
 
     @Override
     @Transactional
-    public List<Product> addProductToUser(Long userId, Long productId)
+    public List<ProductDto> addProductToUser(long userId, long productId)
     {
         var user = userRepository.findById(userId).orElse(null);
         if (user == null)
@@ -74,23 +90,31 @@ public class UserServiceImpl implements UserService
 
         userProductRepository.save(userProduct);
 
-        return user
-                .getProducts()
-                .stream()
-                .map(UserProduct::getProduct)
-                .collect(Collectors.toList());
+        var products = user
+            .getProducts()
+            .stream()
+            .map(UserProduct::getProduct)
+            .toList();
+
+        var productsDtos = ProductMapper.MAPPER.mapToDtos(products);
+
+        return productsDtos;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Product> getUserProducts(Long userId)
+    public List<ProductDto> getUserProducts(long userId)
     {
-        return userRepository
-                .findById(userId)
-                .map(User::getProducts)
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(UserProduct::getProduct)
-                .collect(Collectors.toList());
+        var products = userRepository
+            .findById(userId)
+            .map(User::getProducts)
+            .orElse(Collections.emptyList())
+            .stream()
+            .map(UserProduct::getProduct)
+            .toList();
+
+        var productsDtos = ProductMapper.MAPPER.mapToDtos(products);
+
+        return productsDtos;
     }
 }

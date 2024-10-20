@@ -10,7 +10,7 @@ public class UserProduct
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -22,6 +22,16 @@ public class UserProduct
 
     @Column(name = "eaten_at")
     private OffsetDateTime eatenAt;
+
+    public long getId()
+    {
+        return id;
+    }
+
+    public void setId(long id)
+    {
+        this.id = id;
+    }
 
     public User getUser()
     {

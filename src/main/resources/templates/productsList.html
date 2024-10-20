@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <title>Список продуктов</title>
+</head>
+<body>
+<h1>Список продуктов</h1>
+<article th:each="product: ${products}">
+    <h2 th:text="|Название - ${product.name}|"></h2>
+    <p th:text="|ID - ${product.id}|"></p>
+    <p th:text="|Количество калорий - ${product.calories}|"></p>
+</article>
+</body>
+</html>

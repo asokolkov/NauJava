@@ -1,26 +1,10 @@
-package ru.aleksey.NauJava.entities;
+package ru.aleksey.NauJava.dtos;
 
-import jakarta.persistence.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
-@Entity
-@Table(name = "product")
-public class Product
+public class ProductDto
 {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @Column(unique = true)
     private String name;
-
-    @Column
     private int calories;
-
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
-    private final List<UserProduct> users = new ArrayList<>();
 
     public long getId()
     {
@@ -50,10 +34,5 @@ public class Product
     public void setCalories(int calories)
     {
         this.calories = calories;
-    }
-
-    public List<UserProduct> getUsers()
-    {
-        return users;
     }
 }

@@ -2,8 +2,13 @@ package ru.aleksey.NauJava.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.aleksey.NauJava.dtos.ProductCreateDto;
+import ru.aleksey.NauJava.dtos.ProductDto;
 import ru.aleksey.NauJava.entities.Product;
+import ru.aleksey.NauJava.mappers.ProductMapper;
 import ru.aleksey.NauJava.repositories.ProductRepository;
+
+import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService
@@ -12,8 +17,20 @@ public class ProductServiceImpl implements ProductService
     private ProductRepository productRepository;
 
     @Override
-    public Product createProduct(String name, Integer calories)
+    public List<ProductDto> getProducts() {
+        var products = (List<Product>) productRepository.findAll();
+
+        var productsDtos = ProductMapper.MAPPER.mapToDtos(products);
+
+        return productsDtos;
+    }
+
+    @Override
+    public ProductDto createProduct(ProductCreateDto productCreateDto)
     {
+        var name = productCreateDto.getName();
+        var calories = productCreateDto.getCalories();
+
         var existingProduct = productRepository.findByName(name);
         if (existingProduct != null)
         {
@@ -26,12 +43,18 @@ public class ProductServiceImpl implements ProductService
 
         productRepository.save(product);
 
-        return product;
+        var productDto = ProductMapper.MAPPER.mapToDto(product);
+
+        return productDto;
     }
 
     @Override
-    public Product getProductByName(String name)
+    public ProductDto getProductByName(String name)
     {
-        return productRepository.findByName(name);
+        var product = productRepository.findByName(name);
+
+        var productDto = ProductMapper.MAPPER.mapToDto(product);
+
+        return productDto;
     }
 }

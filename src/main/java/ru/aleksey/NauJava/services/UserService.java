@@ -1,17 +1,19 @@
 package ru.aleksey.NauJava.services;
 
-import ru.aleksey.NauJava.entities.Product;
-import ru.aleksey.NauJava.entities.User;
+import ru.aleksey.NauJava.dtos.ProductDto;
+import ru.aleksey.NauJava.dtos.UserCreateDto;
+import ru.aleksey.NauJava.dtos.UserDto;
+import ru.aleksey.NauJava.dtos.UserLoginDto;
 
 import java.util.List;
 
 public interface UserService
 {
-    User createUser(String login, String name, String password);
+    UserDto createUser(UserCreateDto userCreateDto);
 
-    User getUserByLoginAndPassword(String login, String password);
+    UserDto getUserByLoginAndPassword(UserLoginDto userLoginDto);
 
-    List<Product> addProductToUser(Long userId, Long productId);
+    List<ProductDto> addProductToUser(long userId, long productId);
 
-    List<Product> getUserProducts(Long userId);
+    List<ProductDto> getUserProducts(long userId);
 }
