@@ -1,5 +1,10 @@
 package ru.aleksey.NauJava.services;
 
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import ru.aleksey.NauJava.dtos.ProductDto;
 import ru.aleksey.NauJava.dtos.UserCreateDto;
@@ -9,6 +14,7 @@ import org.springframework.stereotype.Service;
 import ru.aleksey.NauJava.dtos.UserLoginDto;
 import ru.aleksey.NauJava.entities.User;
 import ru.aleksey.NauJava.entities.UserProduct;
+import ru.aleksey.NauJava.enums.UserRole;
 import ru.aleksey.NauJava.mappers.ProductMapper;
 import ru.aleksey.NauJava.mappers.UserMapper;
 import ru.aleksey.NauJava.repositories.ProductRepository;
@@ -20,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserService
+public class UserServiceImpl implements UserService, UserDetailsService
 {
     @Autowired
     private UserRepository userRepository;
@@ -28,6 +34,8 @@ public class UserServiceImpl implements UserService
     private ProductRepository productRepository;
     @Autowired
     private UserProductRepository userProductRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDto createUser(UserCreateDto userCreateDto)
@@ -35,6 +43,7 @@ public class UserServiceImpl implements UserService
         var name = userCreateDto.getName();
         var login = userCreateDto.getLogin();
         var password = userCreateDto.getPassword();
+        var encodedPassword = passwordEncoder.encode(password);
 
         var existingUser = userRepository.findByLogin(login);
         if (existingUser != null)
@@ -45,7 +54,8 @@ public class UserServiceImpl implements UserService
         var user = new User();
         user.setName(name);
         user.setLogin(login);
-        user.setPassword(password);
+        user.setPassword(encodedPassword);
+        user.setRole(UserRole.DEFAULT);
 
         userRepository.save(user);
 
@@ -116,5 +126,16 @@ public class UserServiceImpl implements UserService
         var productsDtos = ProductMapper.MAPPER.mapToDtos(products);
 
         return productsDtos;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
+    {
+        var user = userRepository.findByLogin(username);
+
+        var userRoles = List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().toString()));
+        var userDetails = new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), userRoles);
+
+        return userDetails;
     }
 }

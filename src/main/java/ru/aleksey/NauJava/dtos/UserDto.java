@@ -1,10 +1,13 @@
 package ru.aleksey.NauJava.dtos;
 
+import ru.aleksey.NauJava.enums.UserRole;
+
 public class UserDto
 {
     private Long id;
     private String name;
     private String login;
+    private UserRole role;
 
     public Long getId()
     {
@@ -34,5 +37,15 @@ public class UserDto
     public void setLogin(String login)
     {
         this.login = login;
+    }
+
+    public UserRole getRole()
+    {
+        return role;
+    }
+
+    public void setRole(UserRole role)
+    {
+        this.role = role;
     }
 }

@@ -1,6 +1,7 @@
 package ru.aleksey.NauJava.entities;
 
 import jakarta.persistence.*;
+import ru.aleksey.NauJava.enums.UserRole;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,9 @@ public class User
 
     @Column
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private final List<UserProduct> products = new ArrayList<>();
@@ -63,6 +67,16 @@ public class User
     public void setPassword(String password)
     {
         this.password = password;
+    }
+
+    public UserRole getRole()
+    {
+        return role;
+    }
+
+    public void setRole(UserRole role)
+    {
+        this.role = role;
     }
 
     public List<UserProduct> getProducts()

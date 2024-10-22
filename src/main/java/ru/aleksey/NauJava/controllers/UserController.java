@@ -3,6 +3,7 @@ package ru.aleksey.NauJava.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.aleksey.NauJava.dtos.ProductDto;
 import ru.aleksey.NauJava.dtos.UserCreateDto;
@@ -12,7 +13,7 @@ import ru.aleksey.NauJava.services.UserService;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/api/users")
 public class UserController
 {
@@ -25,15 +26,6 @@ public class UserController
 
         var productsDtos = userService.getUserProducts(userId);
         return ResponseEntity.ok(productsDtos);
-    }
-
-    @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody UserCreateDto userCreate)
-    {
-        var userDto = userService.createUser(userCreate);
-        return userDto != null
-            ? ResponseEntity.status(HttpStatus.CREATED).body(userDto)
-            : ResponseEntity.notFound().build();
     }
 
     @PostMapping("/{userId}/products/{productId}")
@@ -49,6 +41,21 @@ public class UserController
         var userDto = userService.getUserByLoginAndPassword(userLoginDto);
         return userDto != null
             ? ResponseEntity.ok(userDto)
+            : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/registration")
+    public String getRegistration()
+    {
+        return "registration";
+    }
+
+    @PostMapping("/registration")
+    public ResponseEntity<UserDto> registerUser(UserCreateDto userCreate)
+    {
+        var userDto = userService.createUser(userCreate);
+        return userDto != null
+            ? ResponseEntity.status(HttpStatus.CREATED).body(userDto)
             : ResponseEntity.notFound().build();
     }
 }
