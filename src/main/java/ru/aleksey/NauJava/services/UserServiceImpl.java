@@ -38,6 +38,15 @@ public class UserServiceImpl implements UserService, UserDetailsService
     private PasswordEncoder passwordEncoder;
 
     @Override
+    public List<UserDto> getUsers() {
+        var users = (List<User>) userRepository.findAll();
+
+        var usersDtos = UserMapper.MAPPER.mapToDtos(users);
+
+        return usersDtos;
+    }
+
+    @Override
     public UserDto createUser(UserCreateDto userCreateDto)
     {
         var name = userCreateDto.getName();
