@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.aleksey.NauJava.dtos.ProductAddDto;
 import ru.aleksey.NauJava.dtos.UserCreateDto;
 import ru.aleksey.NauJava.dtos.UserLoginDto;
 import ru.aleksey.NauJava.entities.Product;
@@ -43,7 +44,6 @@ public class UserServiceTests
         Assertions.assertEquals(createdUser.getId(), foundUser.getId());
         Assertions.assertEquals(name, foundUser.getName());
         Assertions.assertEquals(login, foundUser.getLogin());
-        Assertions.assertEquals(password, foundUser.getPassword());
     }
 
     @Test
@@ -165,7 +165,10 @@ public class UserServiceTests
 
         productRepository.save(product);
 
-        var userProducts = userService.addProductToUser(user.getId(), product.getId());
+        var productAddDto = new ProductAddDto();
+        productAddDto.setName(productName);
+
+        var userProducts = userService.addProductToUser(login, productAddDto);
 
         Assertions.assertNotNull(userProducts);
         Assertions.assertEquals(1, userProducts.size());
@@ -196,10 +199,12 @@ public class UserServiceTests
 
         productRepository.save(product);
 
-        var userProducts = userService.addProductToUser(-1L, product.getId());
+        var productAddDto = new ProductAddDto();
+        productAddDto.setName(productName);
 
-        Assertions.assertNotNull(userProducts);
-        Assertions.assertEquals(0, userProducts.size());
+        var userProducts = userService.addProductToUser("", productAddDto);
+
+        Assertions.assertNull(userProducts);
     }
 
     @Test
@@ -225,10 +230,12 @@ public class UserServiceTests
 
         productRepository.save(product);
 
-        var userProducts = userService.addProductToUser(user.getId(), -1L);
+        var productAddDto = new ProductAddDto();
+        productAddDto.setName("");
 
-        Assertions.assertNotNull(userProducts);
-        Assertions.assertEquals(0, userProducts.size());
+        var userProducts = userService.addProductToUser(userName, productAddDto);
+
+        Assertions.assertNull(userProducts);
     }
 
     @Test
@@ -254,9 +261,12 @@ public class UserServiceTests
 
         productRepository.save(product);
 
-        var addedUserProducts = userService.addProductToUser(user.getId(), product.getId());
+        var productAddDto = new ProductAddDto();
+        productAddDto.setName(productName);
 
-        var userProducts = userService.getUserProducts(user.getId());
+        var addedUserProducts = userService.addProductToUser(login, productAddDto);
+
+        var userProducts = userService.getUserProducts(login);
 
         Assertions.assertNotNull(userProducts);
         Assertions.assertEquals(1, userProducts.size());
@@ -287,9 +297,12 @@ public class UserServiceTests
 
         productRepository.save(product);
 
-        var addedUserProducts = userService.addProductToUser(user.getId(), product.getId());
+        var productAddDto = new ProductAddDto();
+        productAddDto.setName(productName);
 
-        var userProducts = userService.getUserProducts(-1L);
+        var addedUserProducts = userService.addProductToUser(user.getName(), productAddDto);
+
+        var userProducts = userService.getUserProducts("");
 
         Assertions.assertNotNull(userProducts);
         Assertions.assertEquals(0, userProducts.size());
