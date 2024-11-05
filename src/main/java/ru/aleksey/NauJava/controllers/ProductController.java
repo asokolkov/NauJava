@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import ru.aleksey.NauJava.dtos.ProductDto;
 import ru.aleksey.NauJava.dtos.ProductCreateDto;
 import ru.aleksey.NauJava.services.ProductService;
@@ -15,18 +14,6 @@ public class ProductController
 {
     @Autowired
     private ProductService productService;
-
-    @GetMapping
-    public ModelAndView getProducts() {
-        var productsDtos = productService.getProducts();
-
-        var modelAndView = new ModelAndView();
-        modelAndView.setViewName("productsList");
-
-        modelAndView.addObject("products", productsDtos);
-
-        return modelAndView;
-    }
 
     @GetMapping("/{name}")
     public ResponseEntity<ProductDto> getProductByName(@PathVariable String name)
