@@ -15,15 +15,6 @@ public class ProductController
     @Autowired
     private ProductService productService;
 
-    @GetMapping("/{name}")
-    public ResponseEntity<ProductDto> getProductByName(@PathVariable String name)
-    {
-        var productDto = productService.getProductByName(name);
-        return productDto != null
-            ? ResponseEntity.ok(productDto)
-            : ResponseEntity.notFound().build();
-    }
-
     @PostMapping
     public ResponseEntity<ProductDto> createProduct(@RequestBody ProductCreateDto productCreate)
     {
