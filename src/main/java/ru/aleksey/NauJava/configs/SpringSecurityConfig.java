@@ -25,6 +25,7 @@ public class SpringSecurityConfig
         httpSecurity
             .authorizeHttpRequests((authorization) -> authorization
                 .requestMatchers("/api/users/registration").permitAll()
+                .requestMatchers("/").permitAll()
                 .requestMatchers("/swagger-ui/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
