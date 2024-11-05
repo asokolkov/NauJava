@@ -57,4 +57,20 @@ public class ProductServiceImpl implements ProductService
 
         return productDto;
     }
+
+    @Override
+    public ProductDto deleteProductById(long productId)
+    {
+        var product = productRepository.findById(productId).orElse(null);
+        if (product == null)
+        {
+            return null;
+        }
+
+        var productDto = ProductMapper.MAPPER.mapToDto(product);
+
+        productRepository.delete(product);
+
+        return productDto;
+    }
 }

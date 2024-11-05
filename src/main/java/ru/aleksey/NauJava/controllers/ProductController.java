@@ -23,4 +23,13 @@ public class ProductController
             ? ResponseEntity.status(HttpStatus.CREATED).body(productDto)
             : ResponseEntity.notFound().build();
     }
+
+    @DeleteMapping("/{productId}/delete")
+    public ResponseEntity<ProductDto> deleteProduct(@PathVariable long productId)
+    {
+        var productDto = productService.deleteProductById(productId);
+        return productDto != null
+            ? ResponseEntity.status(HttpStatus.CREATED).body(productDto)
+            : ResponseEntity.notFound().build();
+    }
 }

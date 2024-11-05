@@ -12,4 +12,6 @@ public interface ProductService
     ProductDto createProduct(ProductCreateDto productCreateDto);
 
     ProductDto getProductByName(String name);
+
+    ProductDto deleteProductById(long productId);
 }

@@ -29,6 +29,7 @@ public class SpringSecurityConfig
                 .requestMatchers("/products").permitAll()
                 .requestMatchers("/register").permitAll()
                 .requestMatchers("/swagger-ui/**").hasRole("ADMIN")
+                .requestMatchers("/api/products/*/delete").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .formLogin(Customizer.withDefaults())

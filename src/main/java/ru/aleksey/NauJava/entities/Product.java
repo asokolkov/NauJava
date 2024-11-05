@@ -19,7 +19,7 @@ public class Product
     @Column
     private int calories;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<UserProduct> users = new ArrayList<>();
 
     public long getId()
