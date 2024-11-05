@@ -7,12 +7,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.aleksey.NauJava.services.ProductService;
+import ru.aleksey.NauJava.services.UserService;
 
 @Controller
 public class PageController
 {
     @Autowired
     private ProductService productService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     public String showHomePage(Model model, Authentication authentication)
@@ -34,6 +37,18 @@ public class PageController
         model.addAttribute("userAuthenticated", userAuthenticated);
 
         return "productsPage";
+    }
+
+    @GetMapping("/my-products")
+    public String showMyProductsPage(Model model, Authentication authentication)
+    {
+        var username = authentication.getName();
+
+        var productsDtos = userService.getUserProducts(username);
+
+        model.addAttribute("products", productsDtos);
+
+        return "myProductsPage";
     }
 
     @GetMapping("/register")

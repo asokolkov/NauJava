@@ -6,12 +6,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import ru.aleksey.NauJava.dtos.ProductDto;
-import ru.aleksey.NauJava.dtos.UserCreateDto;
-import ru.aleksey.NauJava.dtos.UserDto;
+import ru.aleksey.NauJava.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.aleksey.NauJava.dtos.UserLoginDto;
 import ru.aleksey.NauJava.entities.User;
 import ru.aleksey.NauJava.entities.UserProduct;
 import ru.aleksey.NauJava.enums.UserRole;
@@ -88,18 +85,18 @@ public class UserServiceImpl implements UserService, UserDetailsService
 
     @Override
     @Transactional
-    public List<ProductDto> addProductToUser(long userId, long productId)
+    public List<ProductDto> addProductToUser(String username, ProductAddDto productAddDto)
     {
-        var user = userRepository.findById(userId).orElse(null);
+        var user = userRepository.findByLogin(username);
         if (user == null)
         {
-            return Collections.emptyList();
+            return null;
         }
 
-        var product = productRepository.findById(productId).orElse(null);
+        var product = productRepository.findByName(productAddDto.getName());
         if (product == null)
         {
-            return Collections.emptyList();
+            return null;
         }
 
         var userProduct = new UserProduct();
@@ -122,12 +119,15 @@ public class UserServiceImpl implements UserService, UserDetailsService
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductDto> getUserProducts(long userId)
+    public List<ProductDto> getUserProducts(String username)
     {
-        var products = userRepository
-            .findById(userId)
-            .map(User::getProducts)
-            .orElse(Collections.emptyList())
+        var user =userRepository.findByLogin(username);
+        if (user == null)
+        {
+            return Collections.emptyList();
+        }
+
+        var products = user.getProducts()
             .stream()
             .map(UserProduct::getProduct)
             .toList();
