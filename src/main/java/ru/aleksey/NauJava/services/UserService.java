@@ -15,4 +15,6 @@ public interface UserService
     List<ProductDto> addProductToUser(String username, ProductAddDto productAddDto);
 
     List<ProductDto> getUserProducts(String username);
+
+    List<ReportDto> getUserReports(String username);
 }

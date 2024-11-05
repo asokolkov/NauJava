@@ -17,7 +17,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link text-primary" href="/">Главная</a>
+                <a class="nav-link" href="/">Главная</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/products">Продукты</a>
@@ -30,14 +30,10 @@
             </li>
         </ul>
     </div>
-    <a th:unless="${userAuthenticated}" class="btn btn-outline-primary" href="/login" role="button">Войти</a>
-    <a th:unless="${userAuthenticated}" class="btn btn-primary ms-2" href="/register"
-       role="button">Зарегистрироваться</a>
-    <a th:if="${userAuthenticated}" class="btn btn-outline-danger ms-2" href="/logout" role="button">Выйти</a>
+    <a class="btn btn-outline-danger" href="/logout" role="button">Выйти</a>
 </nav>
 
-<h1>Что это?</h1>
-<p>Это микросайт, который позволяет считать калории.</p>
+[(${reportContent})]
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"

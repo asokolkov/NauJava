@@ -3,6 +3,8 @@ package ru.aleksey.NauJava.entities;
 import jakarta.persistence.*;
 import ru.aleksey.NauJava.enums.ReportStatus;
 
+import java.time.OffsetDateTime;
+
 @Entity
 @Table(name = "report")
 public class Report
@@ -16,6 +18,12 @@ public class Report
 
     @Enumerated(EnumType.STRING)
     private ReportStatus status;
+
+    @Column
+    private OffsetDateTime startDate;
+
+    @Column
+    private OffsetDateTime endDate;
 
     public Long getId()
     {
@@ -45,5 +53,25 @@ public class Report
     public void setStatus(ReportStatus status)
     {
         this.status = status;
+    }
+
+    public OffsetDateTime getStartDate()
+    {
+        return startDate;
+    }
+
+    public void setStartDate(OffsetDateTime startDate)
+    {
+        this.startDate = startDate;
+    }
+
+    public OffsetDateTime getEndDate()
+    {
+        return endDate;
+    }
+
+    public void setEndDate(OffsetDateTime endDate)
+    {
+        this.endDate = endDate;
     }
 }

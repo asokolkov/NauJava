@@ -1,10 +1,13 @@
 package ru.aleksey.NauJava.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import ru.aleksey.NauJava.dtos.ReportCreateDto;
 import ru.aleksey.NauJava.dtos.ReportDto;
 import ru.aleksey.NauJava.services.ReportService;
 
@@ -17,28 +20,17 @@ public class ReportController
     @Autowired
     private ReportService reportService;
 
-    @GetMapping("/{reportId}")
-    public ModelAndView getUsersReport(@PathVariable long reportId)
+    @PostMapping
+    public ResponseEntity<ReportDto> createReport(@RequestBody ReportCreateDto reportCreateDto, Authentication authentication)
     {
-        var report = reportService.getReport(reportId);
+        var username = authentication.getName();
 
-        var modelAndView = new ModelAndView();
-        modelAndView.setViewName("report");
+        var reportDto = reportService.createReport(username, reportCreateDto);
 
-        var reportContent = report != null ? report.getContent() : "No such report";
+        CompletableFuture.runAsync(() -> reportService.generateAsyncReport(username, reportDto));
 
-        modelAndView.addObject("reportContent", reportContent);
-
-        return modelAndView;
-    }
-
-    @PostMapping("/generate")
-    public ResponseEntity<ReportDto> generateReport()
-    {
-        var createdReportDto = reportService.createReport();
-
-        CompletableFuture.runAsync(() -> reportService.generateAsyncReport(createdReportDto.getId()));
-
-        return ResponseEntity.ok(createdReportDto);
+        return reportDto != null
+            ? ResponseEntity.status(HttpStatus.CREATED).body(reportDto)
+            : ResponseEntity.notFound().build();
     }
 }

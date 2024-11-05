@@ -29,6 +29,9 @@ public class User
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private final List<UserProduct> products = new ArrayList<>();
 
+    @OneToMany(fetch = FetchType.LAZY)
+    private final List<Report> reports = new ArrayList<>();
+
     public long getId()
     {
         return id;
@@ -82,5 +85,10 @@ public class User
     public List<UserProduct> getProducts()
     {
         return products;
+    }
+
+    public List<Report> getReports()
+    {
+        return reports;
     }
 }

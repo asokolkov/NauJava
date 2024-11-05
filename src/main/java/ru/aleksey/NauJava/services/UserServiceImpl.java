@@ -1,18 +1,19 @@
 package ru.aleksey.NauJava.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.aleksey.NauJava.dtos.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import ru.aleksey.NauJava.entities.User;
 import ru.aleksey.NauJava.entities.UserProduct;
 import ru.aleksey.NauJava.enums.UserRole;
 import ru.aleksey.NauJava.mappers.ProductMapper;
+import ru.aleksey.NauJava.mappers.ReportMapper;
 import ru.aleksey.NauJava.mappers.UserMapper;
 import ru.aleksey.NauJava.repositories.ProductRepository;
 import ru.aleksey.NauJava.repositories.UserProductRepository;
@@ -35,7 +36,8 @@ public class UserServiceImpl implements UserService, UserDetailsService
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public List<UserDto> getUsers() {
+    public List<UserDto> getUsers()
+    {
         var users = (List<User>) userRepository.findAll();
 
         var usersDtos = UserMapper.MAPPER.mapToDtos(users);
@@ -121,7 +123,7 @@ public class UserServiceImpl implements UserService, UserDetailsService
     @Transactional(readOnly = true)
     public List<ProductDto> getUserProducts(String username)
     {
-        var user =userRepository.findByLogin(username);
+        var user = userRepository.findByLogin(username);
         if (user == null)
         {
             return Collections.emptyList();
@@ -135,6 +137,23 @@ public class UserServiceImpl implements UserService, UserDetailsService
         var productsDtos = ProductMapper.MAPPER.mapToDtos(products);
 
         return productsDtos;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReportDto> getUserReports(String username)
+    {
+        var user = userRepository.findByLogin(username);
+        if (user == null)
+        {
+            return Collections.emptyList();
+        }
+
+        var reports = user.getReports();
+
+        var reportsDtos = ReportMapper.MAPPER.mapToDtos(reports);
+
+        return reportsDtos;
     }
 
     @Override
