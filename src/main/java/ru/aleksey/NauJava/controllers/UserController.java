@@ -43,13 +43,7 @@ public class UserController
             : ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/registration")
-    public String getRegistration()
-    {
-        return "registration";
-    }
-
-    @PostMapping("/registration")
+    @PostMapping("/register")
     public ResponseEntity<UserDto> registerUser(UserCreateDto userCreate)
     {
         var userDto = userService.createUser(userCreate);
